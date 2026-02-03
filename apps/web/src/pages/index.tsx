@@ -1,31 +1,24 @@
-import React, { useState } from 'react';
-import { LoginForm } from '../components/LoginForm';
-import { UserCard } from '../components/UserCard';
-import { List } from '../components/List';
-import { Modal } from '../components/Modal';
+import Link from 'next/link';
 
-export default function HomePage() {
-  const [open, setOpen] = useState(false);
-  const unused = 123;
-
+export default function Home() {
   return (
-    <div>
+    <main className="container">
       <h1>Code Quality Training</h1>
-      <LoginForm />
+      <p>This app contains intentional security issues for training purposes.</p>
 
-      <UserCard
-        user={{
-          name: 'Jane Doe',
-          bio: '<strong>Trainer</strong> and <em>mentor</em>'
-        }}
-      />
+      <nav style={{ marginTop: '2rem' }}>
+        <ul>
+          <li><Link href="/dashboard">Dashboard</Link></li>
+          <li><Link href="/users">Users</Link></li>
+          <li><Link href="/settings">Settings</Link></li>
+          <li><Link href="/login">Login</Link></li>
+        </ul>
+      </nav>
 
-      <List items={['one', 'two', 'three']} />
-
-      <button onClick={() => setOpen(true)}>Open modal</button>
-      <Modal isOpen={open} onClose={() => setOpen(false)}>
-        Modal content
-      </Modal>
-    </div>
+      <div style={{ marginTop: '2rem', padding: '1rem', background: '#fff3cd', borderRadius: '8px' }}>
+        <strong>Warning:</strong> This is a training application with intentional vulnerabilities.
+        Do not use in production!
+      </div>
+    </main>
   );
 }

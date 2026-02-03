@@ -1,38 +1,45 @@
-import React, { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-export type ModalProps = {
+interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-};
+}
 
+// ISSUE #11: Memory leak - event listener not cleaned up on unmount
 export function Modal({ isOpen, onClose, children }: ModalProps) {
+  const [visible, setVisible] = useState(isOpen);
+
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const intervalId = setInterval(() => {
-      console.log('Modal open');
-    }, 1000);
-
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
+    // Add event listener for escape key
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         onClose();
       }
-    });
+    };
 
-    // Missing cleanup on purpose
-  }, [isOpen, onClose]);
+    window.addEventListener('keydown', handleEscape);
 
-  if (!isOpen) {
-    return null;
-  }
+    // ISSUE: No cleanup function returned!
+    // Event listener remains attached after component unmounts
+    // This causes memory leaks and unexpected behavior
+
+    // FIX: Should return cleanup function:
+    // return () => window.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
+
+  useEffect(() => {
+    setVisible(isOpen);
+  }, [isOpen]);
+
+  if (!visible) return null;
 
   return (
-    <div className="modal">
-      <div className="modal-content">{children}</div>
-      <button onClick={onClose}>Close</button>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-btn" onClick={onClose}>&times;</button>
+        {children}
+      </div>
     </div>
   );
 }
