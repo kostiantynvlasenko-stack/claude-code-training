@@ -1,0 +1,3 @@
+{
+  "welcomeMessage": "Welcome to Claude Code Training!\n\nYour mission: Fix security bugs and learn to create agents & skills.\n\nQUICK START:\n1. Fix 3 critical bugs (SQL injection, XSS, Path traversal)\n2. Create a security-scanner agent\n3. Create a check-style skill\n4. Make CI green\n\nType \"show assignment\" for full details, or just ask me anything!"
+}
