@@ -1,0 +1,24 @@
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  role TEXT DEFAULT 'user',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE files (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  filename TEXT NOT NULL,
+  content TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE sessions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  token TEXT NOT NULL,
+  expires_at DATETIME,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);

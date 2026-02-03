@@ -1,0 +1,33 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install
+
+      # TRAINING_MISSING_LINT: Uncomment the next 2 lines
+      # - name: Lint
+      #   run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      # TRAINING_TESTS_DISABLED: Replace echo with actual test command
+      - name: Test
+        run: echo "skip tests"  # run: pnpm test
+
+      # TRAINING_NO_AUDIT: Uncomment to enable dependency scanning
+      # - name: Audit Dependencies
+      #   run: pnpm audit --audit-level=high

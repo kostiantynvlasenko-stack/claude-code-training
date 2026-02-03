@@ -1,0 +1,5 @@
+#!/bin/sh
+# . "$(dirname "$0")/_/husky.sh"
+# pnpm lint-staged
+# pnpm audit --audit-level=high
+# pnpm secretlint "**/*"
