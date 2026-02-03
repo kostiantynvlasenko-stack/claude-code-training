@@ -1,95 +1,179 @@
-# Getting Started with an LLM CLI
+# Getting Started with Claude Code CLI
 
-This guide uses the Claude Code CLI as an example. If you use another tool, replace the command and folder names accordingly.
+This guide teaches you the basics of Claude Code CLI.
 
-## Install (example)
+---
 
-```
-npm install -g @anthropic-ai/claude-code
-```
+## 1. What is Claude Code CLI?
 
-## Run (example)
+A command-line AI assistant that can:
+- Read and understand your codebase
+- Find bugs and security issues
+- Write and edit code
+- Run commands
 
-```
+---
+
+## 2. Basic usage
+
+```bash
+# Start Claude Code in your project folder
 cd claude-code-training
 claude
 ```
 
-## Core concepts
-
-### Agents (`.claude/agents/`)
-Specialized helpers with a clear role and task list.
-
-### Commands (`.claude/commands/`)
-Reusable prompts/instructions. Typically invoked as `/project:command-name`.
-
-### Settings (`.claude/settings.json`)
-Behavior config, hooks, and automation rules.
-
-## Useful commands (example)
-- `/help` - list commands
-- `Ctrl+R` - show project rules
-- `Ctrl+C` - cancel execution
-
-## Runtime Guard (API)
-
-Add a guard to prevent accidental production deployment:
-
-```ts
-if (process.env.NODE_ENV === 'production') {
-  console.error('ERROR: This is TRAINING code with intentional bugs.');
-  process.exit(1);
-}
-```
-
-## Database schema (apps/api/schema.sql)
+Now you can chat with Claude about your code:
 
 ```
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  role TEXT DEFAULT 'user',
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+> What files are in this project?
+> Find all TODO comments
+> Explain what apps/api/src/routes/users.ts does
 ```
 
-## Example vulnerable code
+---
 
-SQL Injection (apps/api/src/routes/users.ts):
-```ts
-// VULNERABLE - string concatenation
-router.get('/users/:id', (req, res) => {
-  const user = db.prepare(`SELECT * FROM users WHERE id = ${req.params.id}`).get();
-  res.json(user);
-});
+## 3. Useful commands
+
+| Command | What it does |
+|---------|--------------|
+| `/help` | Show all commands |
+| `/clear` | Clear conversation |
+| `Ctrl+C` | Stop current task |
+| `Ctrl+R` | Show project rules |
+
+---
+
+## 4. Creating an Agent
+
+Agents are specialized helpers. Create a file in `.claude/agents/`:
+
+**Example: `.claude/agents/security-scanner.md`**
+
+```markdown
+# Security Scanner
+
+## Role
+You are a security expert who finds vulnerabilities in code.
+
+## Tasks
+1. Find hardcoded secrets (API keys, passwords)
+2. Find SQL injection vulnerabilities
+3. Find XSS vulnerabilities
+4. Find path traversal vulnerabilities
+
+## How to report
+For each issue found, report:
+- File path and line number
+- Severity (CRITICAL/HIGH/MEDIUM/LOW)
+- Description of the problem
+- How to fix it
 ```
 
-XSS (apps/web/src/components/UserCard.tsx):
-```tsx
-// VULNERABLE - dangerouslySetInnerHTML
-function UserCard({ user }) {
-  return <div dangerouslySetInnerHTML={{ __html: user.bio }} />;
-}
+**How to use it:**
+
+```
+> Use the security-scanner agent to scan apps/api/
 ```
 
-Path Traversal (apps/api/src/routes/files.ts):
-```ts
-// VULNERABLE - no path validation
-router.get('/files/:filename', (req, res) => {
-  const filepath = path.join(__dirname, 'uploads', req.params.filename);
-  res.sendFile(filepath);
-});
+---
+
+## 5. Creating a Skill (Command)
+
+Skills are reusable prompts. Create a file in `.claude/commands/`:
+
+**Example: `.claude/commands/check-security.md`**
+
+```markdown
+Scan the codebase for security issues.
+
+Look for:
+1. Hardcoded API keys and secrets
+2. SQL injection (string concatenation in queries)
+3. XSS (dangerouslySetInnerHTML)
+4. Path traversal (unsanitized file paths)
+
+Output format:
+| Severity | File | Line | Issue |
+|----------|------|------|-------|
 ```
 
-## Terminology (glossary)
+**How to use it:**
 
-| Term | Description | Location |
-|------|-------------|----------|
-| Agent | Specialized helper with a role and tasks | `.claude/agents/` |
-| Command | Reusable prompt/skill | `.claude/commands/` |
-| Rule | Behavior instruction | `.claude/rules/` |
-| Hook | Automated action on events | `.claude/settings.json` |
+```
+> /project:check-security
+```
 
-Note: In this challenge you will create agents and commands. Rules and hooks are optional/advanced.
+---
+
+## 6. Project structure for Claude Code
+
+```
+your-project/
+├── .claude/
+│   ├── agents/           <- Your agents go here
+│   │   └── security-scanner.md
+│   ├── commands/         <- Your skills go here
+│   │   └── check-security.md
+│   └── settings.json     <- (optional) hooks and config
+└── ... your code ...
+```
+
+---
+
+## 7. Tips for this training
+
+### Start simple
+```
+> Read ASSIGNMENT.md
+> What are the 3 critical bugs I need to fix?
+```
+
+### Ask Claude to explain
+```
+> What is SQL injection?
+> Show me the SQL injection bug in apps/api/src/routes/users.ts
+```
+
+### Create tools as you go
+When you find yourself repeating a task, create a skill for it:
+```
+> Help me create a skill that checks for hardcoded secrets
+```
+
+---
+
+## 8. Example workflow
+
+```
+# 1. Start Claude Code
+claude
+
+# 2. Understand the task
+> Read ASSIGNMENT.md and summarize what I need to do
+
+# 3. Find a bug
+> Find SQL injection vulnerabilities in apps/api/
+
+# 4. Fix it
+> Fix the SQL injection in apps/api/src/routes/users.ts
+
+# 5. Create automation
+> Help me create an agent that can find all security issues
+```
+
+---
+
+## 9. Glossary
+
+| Term | What it is | Where it lives |
+|------|------------|----------------|
+| **Agent** | AI helper with a specific role | `.claude/agents/` |
+| **Skill/Command** | Reusable prompt | `.claude/commands/` |
+| **Hook** | Auto-run on events (commit, etc.) | `.claude/settings.json` |
+
+---
+
+## Need more help?
+
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
+- Open `HINTS.md` for task-specific hints
