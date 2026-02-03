@@ -64,14 +64,20 @@ Find all `FAKE_` secrets hardcoded in the code and move them to environment vari
 
 ---
 
-## Part 3: Fix the CI pipeline
+## Part 3: Create CI pipeline
 
-Open `.github/workflows/ci.yml` and find the `TRAINING_*` comments.
+There's no CI yet! Create `.github/workflows/ci.yml` that:
 
-There are 3 things to fix:
-- `TRAINING_MISSING_LINT` - uncomment the lint step
-- `TRAINING_TESTS_DISABLED` - enable the test command
-- `TRAINING_NO_AUDIT` - uncomment the audit step
+1. Triggers on push and pull_request
+2. Runs `pnpm install`
+3. Runs `pnpm build`
+4. Runs `pnpm lint`
+5. Runs `pnpm test`
+
+Ask Claude to help:
+```
+> Help me create a GitHub Actions CI workflow for this project
+```
 
 ---
 
@@ -145,9 +151,9 @@ Make checks run automatically before each commit:
 - [ ] Code uses `process.env.VARIABLE_NAME`
 
 ### Part 3: CI
-- [ ] Lint step enabled
-- [ ] Test step enabled
-- [ ] Audit step enabled
+- [ ] Created `.github/workflows/ci.yml`
+- [ ] CI runs on push/PR
+- [ ] CI runs build, lint, test
 - [ ] CI pipeline is green
 
 ### Part 4: Automation

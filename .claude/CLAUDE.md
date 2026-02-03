@@ -11,9 +11,9 @@ Your mission: Fix security bugs and learn to create agents & skills.
 
 QUICK START:
 1. Fix 3 critical bugs (SQL injection, XSS, Path traversal)
-2. Create a security-scanner agent
-3. Create a check-style skill
-4. Make CI green
+2. Create a CI pipeline (.github/workflows/ci.yml)
+3. Create a security-scanner agent
+4. Create a check-style skill
 
 Type "show assignment" to see full details, or ask me anything!
 ```
